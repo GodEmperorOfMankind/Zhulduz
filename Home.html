@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <title>Extended Quiz</title>
+    <style>
+        body {
+            background-color: #031c38;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            padding-top: 20px;
+        }
+        .quiz-container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #140a67;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .quiz-title {
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .question {
+            display: none;
+            margin-bottom: 20px;
+        }
+        .question p {
+            font-size: 22px; /* Adjust the size as needed */
+        }
+        .question.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .answer, button {
+            font-family: 'Montserrat', sans-serif;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+        .answer {
+            display: block;
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            text-align: center;
+            margin: 5px 0;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .answer:hover, .answer.selected {
+            background-color: #8cb009;
+            color: white;
+            transform: scale(1.05);
+        }
+        .answer input[type="radio"] {
+            display: none;
+        }
+        button#next {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px #999;
+        }
+        button#next:hover {
+            background-color: #45a049;
+            box-shadow: 0 5px #666;
+            transform: translateY(-2px);
+        }
+        button#next:active {
+            background-color: #3e8e41;
+            box-shadow: 0 2px #666;
+            transform: translateY(4px);
+        }
+    </style>
+
+
+
+</head>
+<body>
+<div class="quiz-title">Your IT Career Quiz</div>
+<div class="quiz-container">
+    <div class="question active">
+        <p>Question 1: Какой вид деятельности в IT приносит вам больше удовольствия?</p>
+        <label class="answer"><input type="radio" name="q1" value="Problem Solving">Решение головоломок и проблем</label>
+        <label class="answer"><input type="radio" name="q1" value="Helping Others">Помогать другим и оказывать положительное влияние</label>
+        <label class="answer"><input type="radio" name="q1" value="Creativity">Выражение творчества и воображения</label>
+    </div>
+    <div class="question">
+        <p>Question 2: Как вам нравится узнавать что-то новое?</p>
+        <label class="answer"><input type="radio" name="q2" value="Trial and Error">Методом проб и ошибок</label>
+        <label class="answer"><input type="radio" name="q2" value="Reading and Research">Чтением и исследованием</label>
+        <label class="answer"><input type="radio" name="q2" value="Mentorship">Изучать с ментором</label>
+    </div>
+    <!-- Add more questions here if needed -->
+    <button id="next">Следующий вопрос</button>
+</div>
+
+
+
+<script>
+    let currentQuestion = 0;
+    const questions = document.querySelectorAll('.question');
+    const nextButton = document.getElementById('next');
+
+    function showQuestion(index) {
+        questions.forEach(question => {
+            question.classList.remove('active');
+        });
+        questions[index].classList.add('active');
+    }
+
+    nextButton.addEventListener('click', () => {
+        if (currentQuestion < questions.length - 1) {
+            showQuestion(++currentQuestion);
+        } else {
+            nextButton.style.display = 'none';
+            calculateResults();
+        }
+    });
+
+    function calculateResults() {
+        let correctAnswers = 0;
+        questions.forEach(q => {
+            const selected = q.querySelector('input[type="radio"]:checked');
+            if (selected && selected.getAttribute('data-correct') === 'true') {
+                correctAnswers++;
+            }
+        });
+        const resultText = 'You scored ' + correctAnswers + ' out of ' + questions.length;
+        document.querySelector('.quiz-container').innerHTML = `<div class='result'><h1>Quiz Completed</h1><p>${resultText}</p></div>`;
+    }
+
+    document.querySelectorAll('.answer').forEach(answer => {
+        answer.addEventListener('click', function() {
+            let currentAnswers = this.closest('.question').querySelectorAll('.answer');
+            currentAnswers.forEach(ans => ans.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+
+    // Initialize first question on load
+    showQuestion(0);
+</script>
+</body>
+</html>
